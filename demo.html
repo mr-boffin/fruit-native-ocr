@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+</head>
+<body>
+<h1>Upload an Image or PDF</h1>
+<form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".pdf, .jpeg, .jpg, .png, .gif" required>
+    <button type="submit">Upload</button>
+</form>
+<h2>Response:</h2>
+<pre id="response"></pre>
+
+<script>
+    document.getElementById('uploadForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const formData = new FormData();
+        const fileField = document.querySelector('input[type="file"]');
+
+        formData.append('file', fileField.files[0]);
+
+        fetch('http://localhost:5000/upload', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('response').textContent = 'An error occurred while uploading the file.';
+            });
+    });
+</script>
+</body>
+</html>
